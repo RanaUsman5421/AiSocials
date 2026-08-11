@@ -1,1 +1,1 @@
-export const apiBase = import.meta.env.VITE_API_BASE || 'http://localhost:3000';
+export const apiBase = import.meta.env.VITE_API_BASE || 'https://aisocialsbackend.onrender.com';

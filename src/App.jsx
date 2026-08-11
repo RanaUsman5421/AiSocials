@@ -14,8 +14,6 @@ import ThreadsCallback from './pages/ThreadsCallback';
 function App() {
 
 
-  
-
   useEffect(() => {
     const token = localStorage.getItem('token');
     const user = localStorage.getItem('user');

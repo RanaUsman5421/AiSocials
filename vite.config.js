@@ -8,7 +8,7 @@ export default defineConfig({
     allowedHosts: ['stuck-amiable-liftoff.ngrok-free.dev'],
     proxy: {
       '/api': {
-        target: 'http://localhost:3000',
+        target: 'https://aisocialsbackend.onrender.com',
         changeOrigin: true,
         secure: false,
       },
