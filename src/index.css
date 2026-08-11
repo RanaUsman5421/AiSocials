@@ -1,0 +1,107 @@
+@import url('https://fonts.googleapis.com/css2?family=Poppins:wght@100;200;300;400;500;600;700;800;900&display=swap');
+body {
+    font-family: 'Poppins', sans-serif;
+}
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+:root {
+    /* color tokens copied from design */
+    --on-error-container: #93000a;
+    --tertiary-container: #6f3dd9;
+    --on-primary-fixed: #0f0069;
+    --on-secondary-container: #004666;
+    --tertiary-fixed-dim: #d0bcff;
+    --secondary-fixed-dim: #89ceff;
+    --surface-bright: #f9f9ff;
+    --primary: #3525cd;
+    --on-tertiary-container: #e3d5ff;
+    --secondary: #006591;
+    --secondary-container: #39b8fd;
+    --surface-tint: #4d44e3;
+    --primary-fixed-dim: #c3c0ff;
+    --error-container: #ffdad6;
+    --surface-container-low: #f0f3ff;
+    --surface-container-highest: #d8e3fb;
+    --inverse-on-surface: #ecf1ff;
+    --on-primary-container: #dad7ff;
+    --tertiary-fixed: #e9ddff;
+    --on-secondary: #ffffff;
+    --surface-variant: #d8e3fb;
+    --surface-dim: #cfdaf2;
+    --tertiary: #571ac0;
+    --surface-container: #e7eeff;
+    --primary-fixed: #e2dfff;
+    --on-primary-fixed-variant: #3323cc;
+    --on-tertiary-fixed-variant: #5516be;
+    --surface-container-high: #dee8ff;
+    --secondary-fixed: #c9e6ff;
+    --inverse-primary: #c3c0ff;
+    --surface: #f9f9ff;
+    --surface-container-lowest: #ffffff;
+    --primary-container: #4f46e5;
+    --on-tertiary-fixed: #23005c;
+    --on-surface: #111c2d;
+    --on-error: #ffffff;
+    --outline-variant: #c7c4d8;
+    --on-secondary-fixed: #001e2f;
+    --on-tertiary: #ffffff;
+    --on-primary: #ffffff;
+    --on-surface-variant: #464555;
+    --outline: #777587;
+    --error: #ba1a1a;
+    --on-secondary-fixed-variant: #004c6e;
+    --background: #f9f9ff;
+    --inverse-surface: #263143;
+    --on-background: #111c2d;
+
+    /* spacing tokens */
+    --topbar-height: 64px;
+    --sidebar-width: 280px;
+}
+
+/* helper classes that mirror token names used in the HTML */
+.bg-surface { background-color: var(--surface); }
+.bg-background { background-color: var(--background); }
+.text-on-background { color: var(--on-background); }
+.text-on-surface { color: var(--on-surface); }
+.text-on-surface-variant { color: var(--on-surface-variant); }
+.bg-surface-container-lowest { background-color: var(--surface-container-lowest); }
+.bg-surface-container { background-color: var(--surface-container); }
+.bg-surface-container-high { background-color: var(--surface-container-high); }
+.bg-surface-variant { background-color: var(--surface-variant); }
+.bg-primary { background-color: var(--primary); }
+.bg-primary-container { background-color: var(--primary-container); }
+.text-primary { color: var(--primary); }
+.text-on-primary { color: var(--on-primary); }
+.border-outline-variant { border-color: var(--outline-variant); }
+.outline-variant { outline-color: var(--outline-variant); }
+.text-tertiary { color: var(--tertiary); }
+.bg-tertiary { background-color: var(--tertiary); }
+
+/* glass panel and effects copied from the HTML */
+.glass-panel {
+    background-color: var(--surface-container-lowest);
+    border: 1px solid var(--outline-variant);
+    box-shadow: 0 4px 6px -1px rgba(0,0,0,0.05), 0 2px 4px -1px rgba(0,0,0,0.03);
+}
+.ai-glow { box-shadow: 0 8px 32px 0 rgba(79,70,229,0.15); }
+.ai-pulse-border { position: relative; }
+.ai-pulse-border::after {
+    content: '';
+    position: absolute;
+    inset: -1px;
+    border-radius: inherit;
+    border: 1px solid rgba(139,92,246,0.5);
+    animation: pulse-border 2s cubic-bezier(0.4,0,0.6,1) infinite;
+    pointer-events: none;
+}
+@keyframes pulse-border {
+    0%,100% { opacity: 1; }
+    50% { opacity: .2; }
+}
+
+/* input-glow and btn-glow */
+.input-glow:focus { box-shadow: 0 0 0 3px rgba(79,70,229,0.15); border-color: var(--primary-container); }
+.btn-glow:hover { box-shadow: 0 8px 24px 0 rgba(79,70,229,0.2); }
