@@ -337,11 +337,11 @@ const SocialAccounts = () => {
                     <span className="font-label-sm text-label-sm text-on-surface-variant">AI Agent Idle</span>
                   </div>
                 </div>
-                  <div className="flex flex-wrap items-center gap-2">
-                    <button onClick={startFacebookOAuth} className="px-4 py-1.5 bg-primary text-on-primary rounded-lg font-label-sm text-label-sm hover:bg-primary/90 transition-colors shadow-sm">{"Connect"}</button>
-                    <button onClick={handleOpenModal} className="px-4 py-1.5 bg-surface-container text-on-surface-variant rounded-lg font-label-sm text-label-sm border border-outline-variant hover:bg-surface-variant/70 transition-colors">Create Post</button>
-                    <button onClick={() => { setPhotoUrl(''); setPhotoCaption(''); setPhotoStatus(''); setIsPhotoModalOpen(true)}} className="px-4 py-1.5 bg-surface text-on-surface rounded-lg font-label-sm text-label-sm border border-outline-variant hover:bg-surface-variant transition-colors">Upload Photo</button>
-                  </div>
+                <div className="flex flex-wrap items-center gap-2">
+                  <button onClick={startFacebookOAuth} className="px-4 py-1.5 bg-primary text-on-primary rounded-lg font-label-sm text-label-sm hover:bg-primary/90 transition-colors shadow-sm">{"Connect"}</button>
+                  <button onClick={handleOpenModal} className="px-4 py-1.5 bg-surface-container text-on-surface-variant rounded-lg font-label-sm text-label-sm border border-outline-variant hover:bg-surface-variant/70 transition-colors">Create Post</button>
+                  <button onClick={() => { setPhotoUrl(''); setPhotoCaption(''); setPhotoStatus(''); setIsPhotoModalOpen(true) }} className="px-4 py-1.5 bg-surface text-on-surface rounded-lg font-label-sm text-label-sm border border-outline-variant hover:bg-surface-variant transition-colors">Upload Photo</button>
+                </div>
               </div>
 
               {/* Instagram Card */}
@@ -356,7 +356,7 @@ const SocialAccounts = () => {
                       <p className="font-label-sm text-label-sm text-on-surface-variant mt-1">Instagram</p>
                     </div>
                   </div>
-                    <div className={`flex items-center gap-2 px-2 py-1 rounded border ${instagramStatus === 'Connected' ? 'bg-emerald-50 border border-emerald-500/20' : 'bg-surface-container border border-outline-variant'}`}>
+                  <div className={`flex items-center gap-2 px-2 py-1 rounded border ${instagramStatus === 'Connected' ? 'bg-emerald-50 border border-emerald-500/20' : 'bg-surface-container border border-outline-variant'}`}>
                     <div className={`w-1.5 h-1.5 rounded-full ${instagramStatus === 'Connected' ? 'bg-emerald-500' : 'bg-on-surface-variant'}`} />
                     <span className={`font-label-sm text-[10px] font-bold uppercase tracking-wider ${instagramStatus === 'Connected' ? 'text-emerald-500' : 'text-on-surface-variant'}`}>{instagramStatus === 'Connected' ? 'Connected' : 'Not connected'}</span>
                   </div>
@@ -367,32 +367,32 @@ const SocialAccounts = () => {
                     <span className="font-label-sm text-label-sm text-primary">AI Agent Active</span>
                   </div>
                 </div>
-                  <div className="flex flex-wrap items-center gap-2">
-                    <button
-                      onClick={() => {
-                        const userId = getCurrentUserId()
-                        if (!userId) {
-                          setStatus('Please login to the dashboard first.')
-                          return
-                        }
-                        startInstagramOAuth(userId)
-                      }}
-                      className="px-4 py-1.5 bg-primary text-on-primary rounded-lg font-label-sm text-label-sm hover:bg-primary/90 transition-colors shadow-sm"
-                    >
-                      {instagramUsername ? 'Reconnect' : 'Connect'}
-                    </button>
-                    <button
-                      onClick={() => {
-                        setIgImageUrl('')
-                        setIgCaption('')
-                        setIgStatus('')
-                        setIsInstagramModalOpen(true)
-                      }}
-                      className="px-4 py-1.5 bg-surface-container text-on-surface-variant rounded-lg font-label-sm text-label-sm border border-outline-variant hover:bg-surface-variant/70 transition-colors"
-                    >
-                      Create Post
-                    </button>
-                  </div>
+                <div className="flex flex-wrap items-center gap-2">
+                  <button
+                    onClick={() => {
+                      const userId = getCurrentUserId()
+                      if (!userId) {
+                        setStatus('Please login to the dashboard first.')
+                        return
+                      }
+                      startInstagramOAuth(userId)
+                    }}
+                    className="px-4 py-1.5 bg-primary text-on-primary rounded-lg font-label-sm text-label-sm hover:bg-primary/90 transition-colors shadow-sm"
+                  >
+                    {instagramUsername ? 'Reconnect' : 'Connect'}
+                  </button>
+                  <button
+                    onClick={() => {
+                      setIgImageUrl('')
+                      setIgCaption('')
+                      setIgStatus('')
+                      setIsInstagramModalOpen(true)
+                    }}
+                    className="px-4 py-1.5 bg-surface-container text-on-surface-variant rounded-lg font-label-sm text-label-sm border border-outline-variant hover:bg-surface-variant/70 transition-colors"
+                  >
+                    Create Post
+                  </button>
+                </div>
               </div>
 
               {/* Threads Card */}
@@ -468,6 +468,73 @@ const SocialAccounts = () => {
                 </div>
               </div>
 
+              {/* TikTok Card */}
+              <div className="glass-panel rounded-xl p-6 flex flex-col gap-6 relative overflow-hidden bg-surface-container-lowest">
+                <div className="flex justify-between items-start relative z-10">
+                  <div className="flex items-center gap-4">
+                    <div className="w-12 h-12 rounded-full bg-surface-container-high flex items-center justify-center border border-outline-variant">
+                      <img src={tiktokLogo} alt="Threads Logo" className="w-6 h-6" />
+                    </div>
+                    <div>
+                      <h3 className="font-headline-md text-[20px] font-semibold text-on-surface">TikTok</h3>
+                      <p className="font-label-sm text-label-sm text-on-surface-variant mt-1">{threadsUserId ? `Connected as ${threadsUserId}` : 'Meta Threads'}</p>
+                    </div>
+                  </div>
+                </div>
+                <div className="flex items-center justify-between border-t border-outline-variant pt-4 relative z-10">
+                  <div className="flex items-center gap-2">
+                    <span className="material-symbols-outlined text-on-surface-variant text-[18px]">smart_toy</span>
+                    <span className="font-label-sm text-label-sm text-on-surface-variant">AI Agent Idle</span>
+                  </div>
+                  <button onClick={handleThreadsConnect} className="px-4 py-1.5 bg-primary text-on-primary rounded-lg font-label-sm text-label-sm hover:bg-primary/90 transition-colors shadow-sm">
+                    {threadsConnected ? 'Reconnect' : 'Connect'}
+                  </button>
+                </div>
+                <div className="flex flex-col gap-3 pt-4">
+                  <div className="flex items-center gap-2 text-on-surface-variant text-sm">
+                    <span className="material-symbols-outlined text-[16px]">info</span>
+                    <span>Only public HTTPS image URLs work for Threads photo posts.</span>
+                  </div>
+                  <div className="grid gap-3">
+                    <div className="flex items-center gap-3">
+                      <label className="font-label-sm text-label-sm text-on-surface-variant">Post Type</label>
+                      <select
+                        value={threadsPostType}
+                        onChange={(event) => setThreadsPostType(event.target.value)}
+                        className="rounded-lg border border-outline-variant bg-surface p-2 text-on-surface"
+                      >
+                        <option value="TEXT">Text</option>
+                        <option value="IMAGE">Photo</option>
+                      </select>
+                    </div>
+                    <textarea
+                      value={threadsText}
+                      onChange={(event) => setThreadsText(event.target.value)}
+                      rows={4}
+                      className="w-full bg-surface border border-outline-variant rounded-lg p-4 text-on-surface focus:outline-none focus:border-primary"
+                      placeholder="What’s on your mind?"
+                    />
+                    {threadsPostType === 'IMAGE' && (
+                      <input
+                        type="url"
+                        value={threadsImageUrl}
+                        onChange={(event) => setThreadsImageUrl(event.target.value)}
+                        placeholder="Public image HTTPS URL"
+                        className="w-full bg-surface border border-outline-variant rounded-lg p-4 text-on-surface focus:outline-none focus:border-primary"
+                      />
+                    )}
+                    <button
+                      onClick={handleThreadsPublish}
+                      disabled={threadsLoading}
+                      className="px-4 py-2 bg-primary text-on-primary rounded-lg font-label-sm text-label-sm hover:bg-primary/90 transition-colors shadow-sm"
+                    >
+                      {threadsLoading ? 'Publishing...' : 'Publish to Threads'}
+                    </button>
+                  </div>
+                </div>
+              </div>
+
+
               {/* X Card */}
               <div className="glass-panel rounded-xl p-6 flex flex-col gap-6 relative overflow-hidden bg-surface-container-lowest">
                 <div className="flex justify-between items-start relative z-10">
@@ -499,6 +566,9 @@ const SocialAccounts = () => {
                 </div>
               </div>
             </div>
+
+
+
 
             {/* Right Column */}
             <div className="flex flex-col gap-[24px]">

@@ -6,6 +6,8 @@ import AuthLayout from './layouts/AuthLayout';
 import DashboardLayout from './layouts/DashboardLayout';
 import { Routes, Route } from 'react-router-dom';
 import Analytics from './pages/Analytics';
+import PrivacyPolicy from './pages/PrivacyPolicy';
+import Terms from './pages/Terms';
 import SocialAccounts from './pages/SocialAccounts';
 import FacebookCallback from './pages/FacebookCallback';
 import InstagramCallback from './pages/InstagramCallback';
@@ -34,6 +36,8 @@ function App() {
         <Route path='/dashboard' element={<Dashboard />} />
         <Route path='/analytics' element={<Analytics />} />
         <Route path='/socialaccounts' element={<SocialAccounts />} />
+        <Route path='/privacy-policy' element={<PrivacyPolicy />} />
+        <Route path='/terms' element={<Terms />} />
       </Route>
 
       {/* Facebook OAuth callback routes (support both paths) */}
