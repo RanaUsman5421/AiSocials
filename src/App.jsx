@@ -13,6 +13,7 @@ import FacebookCallback from './pages/FacebookCallback';
 import InstagramCallback from './pages/InstagramCallback';
 import ThreadsCallback from './pages/ThreadsCallback';
 import XCallback from './pages/XCallback';
+import TikTokCallback from './pages/TikTokCallback';
 
 function App() {
 
@@ -46,6 +47,7 @@ function App() {
       <Route path='/auth/instagram/callback' element={<InstagramCallback />} />
       <Route path='/auth/threads/callback' element={<ThreadsCallback />} />
       <Route path='/auth/x/callback' element={<XCallback />} />
+      <Route path='/auth/tiktok/callback' element={<TikTokCallback />} />
     </Routes>
   )
 }

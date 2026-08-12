@@ -3,13 +3,14 @@ import { startFacebookOAuth, publishPost, publishPhoto } from '../services/faceb
 import { startInstagramOAuth, publishInstagram, verifyInstagram } from '../services/instagramClient'
 import { startThreadsOAuth, publishThreads, verifyThreads } from '../services/threadsClient'
 import { startXOAuth, publishX, verifyX } from '../services/xClient'
+import TikTokCard from '../components/TikTokCard'
 import FacebookLogo from '../assets/fb_logo.webp'
 import instaLogo from '../assets/insta_logo.png'
-import tiktokLogo from '../assets/tiktok_logo.webp'
 import threadsLogo from '../assets/threads_logo.png'
 
 const SocialAccounts = () => {
   const [isModalOpen, setIsModalOpen] = useState(false)
+  const [currentUserId, setCurrentUserId] = useState(null)
   const [message, setMessage] = useState('')
   const [isPhotoModalOpen, setIsPhotoModalOpen] = useState(false)
   const [photoUrl, setPhotoUrl] = useState('')
@@ -56,6 +57,7 @@ const SocialAccounts = () => {
         setXConnected(!!parsed?.x?.userId)
 
         const userId = parsed._id || parsed.id || parsed.userId || null
+        setCurrentUserId(userId)
         if (userId) {
           try {
             const verification = await verifyInstagram(userId)
@@ -468,71 +470,7 @@ const SocialAccounts = () => {
                 </div>
               </div>
 
-              {/* TikTok Card */}
-              <div className="glass-panel rounded-xl p-6 flex flex-col gap-6 relative overflow-hidden bg-surface-container-lowest">
-                <div className="flex justify-between items-start relative z-10">
-                  <div className="flex items-center gap-4">
-                    <div className="w-12 h-12 rounded-full bg-surface-container-high flex items-center justify-center border border-outline-variant">
-                      <img src={tiktokLogo} alt="Threads Logo" className="w-6 h-6" />
-                    </div>
-                    <div>
-                      <h3 className="font-headline-md text-[20px] font-semibold text-on-surface">TikTok</h3>
-                      <p className="font-label-sm text-label-sm text-on-surface-variant mt-1">{threadsUserId ? `Connected as ${threadsUserId}` : 'Meta Threads'}</p>
-                    </div>
-                  </div>
-                </div>
-                <div className="flex items-center justify-between border-t border-outline-variant pt-4 relative z-10">
-                  <div className="flex items-center gap-2">
-                    <span className="material-symbols-outlined text-on-surface-variant text-[18px]">smart_toy</span>
-                    <span className="font-label-sm text-label-sm text-on-surface-variant">AI Agent Idle</span>
-                  </div>
-                  <button onClick={handleThreadsConnect} className="px-4 py-1.5 bg-primary text-on-primary rounded-lg font-label-sm text-label-sm hover:bg-primary/90 transition-colors shadow-sm">
-                    {threadsConnected ? 'Reconnect' : 'Connect'}
-                  </button>
-                </div>
-                <div className="flex flex-col gap-3 pt-4">
-                  <div className="flex items-center gap-2 text-on-surface-variant text-sm">
-                    <span className="material-symbols-outlined text-[16px]">info</span>
-                    <span>Only public HTTPS image URLs work for Threads photo posts.</span>
-                  </div>
-                  <div className="grid gap-3">
-                    <div className="flex items-center gap-3">
-                      <label className="font-label-sm text-label-sm text-on-surface-variant">Post Type</label>
-                      <select
-                        value={threadsPostType}
-                        onChange={(event) => setThreadsPostType(event.target.value)}
-                        className="rounded-lg border border-outline-variant bg-surface p-2 text-on-surface"
-                      >
-                        <option value="TEXT">Text</option>
-                        <option value="IMAGE">Photo</option>
-                      </select>
-                    </div>
-                    <textarea
-                      value={threadsText}
-                      onChange={(event) => setThreadsText(event.target.value)}
-                      rows={4}
-                      className="w-full bg-surface border border-outline-variant rounded-lg p-4 text-on-surface focus:outline-none focus:border-primary"
-                      placeholder="What’s on your mind?"
-                    />
-                    {threadsPostType === 'IMAGE' && (
-                      <input
-                        type="url"
-                        value={threadsImageUrl}
-                        onChange={(event) => setThreadsImageUrl(event.target.value)}
-                        placeholder="Public image HTTPS URL"
-                        className="w-full bg-surface border border-outline-variant rounded-lg p-4 text-on-surface focus:outline-none focus:border-primary"
-                      />
-                    )}
-                    <button
-                      onClick={handleThreadsPublish}
-                      disabled={threadsLoading}
-                      className="px-4 py-2 bg-primary text-on-primary rounded-lg font-label-sm text-label-sm hover:bg-primary/90 transition-colors shadow-sm"
-                    >
-                      {threadsLoading ? 'Publishing...' : 'Publish to Threads'}
-                    </button>
-                  </div>
-                </div>
-              </div>
+              <TikTokCard userId={currentUserId} />
 
 
               {/* X Card */}
