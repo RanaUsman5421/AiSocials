@@ -10,6 +10,7 @@ import SocialAccounts from './pages/SocialAccounts';
 import FacebookCallback from './pages/FacebookCallback';
 import InstagramCallback from './pages/InstagramCallback';
 import ThreadsCallback from './pages/ThreadsCallback';
+import XCallback from './pages/XCallback';
 
 function App() {
 
@@ -40,6 +41,7 @@ function App() {
       <Route path='/auth/facebook/callback' element={<FacebookCallback />} />
       <Route path='/auth/instagram/callback' element={<InstagramCallback />} />
       <Route path='/auth/threads/callback' element={<ThreadsCallback />} />
+      <Route path='/auth/x/callback' element={<XCallback />} />
     </Routes>
   )
 }

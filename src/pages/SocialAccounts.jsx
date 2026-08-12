@@ -2,6 +2,7 @@ import React, { useEffect, useState } from 'react'
 import { startFacebookOAuth, publishPost, publishPhoto } from '../services/facebookClient'
 import { startInstagramOAuth, publishInstagram, verifyInstagram } from '../services/instagramClient'
 import { startThreadsOAuth, publishThreads, verifyThreads } from '../services/threadsClient'
+import { startXOAuth, publishX, verifyX } from '../services/xClient'
 import FacebookLogo from '../assets/fb_logo.webp'
 import instaLogo from '../assets/insta_logo.png'
 import tiktokLogo from '../assets/tiktok_logo.webp'
@@ -23,13 +24,21 @@ const SocialAccounts = () => {
   const [igStatus, setIgStatus] = useState('')
   const [instagramUsername, setInstagramUsername] = useState(null)
   const [instagramVerified, setInstagramVerified] = useState(false)
+  const [instagramStatus, setInstagramStatus] = useState('Not connected')
   const [threadsConnected, setThreadsConnected] = useState(false)
-  const [threadsStatus, setThreadsStatus] = useState('')
+  const [threadsStatus, setThreadsStatus] = useState('Not connected')
+  const [threadsUserId, setThreadsUserId] = useState(null)
   const [threadsPostType, setThreadsPostType] = useState('TEXT')
   const [threadsText, setThreadsText] = useState('')
   const [threadsImageUrl, setThreadsImageUrl] = useState('')
   const [threadsPublishStatus, setThreadsPublishStatus] = useState('')
   const [threadsLoading, setThreadsLoading] = useState(false)
+  const [xConnected, setXConnected] = useState(false)
+  const [xUsername, setXUsername] = useState(null)
+  const [xName, setXName] = useState(null)
+  const [xStatus, setXStatus] = useState('')
+  const [xText, setXText] = useState('')
+  const [xLoading, setXLoading] = useState(false)
 
   useEffect(() => {
     const loadStoredUser = async () => {
@@ -40,17 +49,40 @@ const SocialAccounts = () => {
         setPageId(parsed?.facebook?.pageId || null)
         setPageName(parsed?.facebook?.pageName || null)
         setInstagramUsername(parsed?.instagram?.username || null)
+        setThreadsUserId(parsed?.threads?.userId || null)
         setThreadsConnected(!!parsed?.threads?.userId)
+        setXUsername(parsed?.x?.username || null)
+        setXName(parsed?.x?.name || null)
+        setXConnected(!!parsed?.x?.userId)
 
         const userId = parsed._id || parsed.id || parsed.userId || null
         if (userId) {
           try {
+            const verification = await verifyInstagram(userId)
+            setInstagramVerified(verification?.valid === true)
+            setInstagramUsername(verification?.instagramProfile?.username || parsed?.instagram?.username || null)
+            setInstagramStatus(verification?.valid ? 'Connected' : 'Not connected')
+          } catch (err) {
+            setInstagramVerified(false)
+            setInstagramStatus('Not connected')
+          }
+
+          try {
             const verification = await verifyThreads(userId)
             setThreadsConnected(verification?.valid === true)
             setThreadsStatus(verification?.valid ? 'Connected' : 'Not connected')
+            setThreadsUserId(verification?.profile?.id || parsed?.threads?.userId || null)
           } catch (err) {
             setThreadsConnected(false)
             setThreadsStatus('Not connected')
+          }
+          try {
+            const verification = await verifyX(userId)
+            setXConnected(verification?.valid === true)
+            setXUsername(verification?.profile?.username || null)
+            setXName(verification?.profile?.name || parsed?.x?.name || null)
+          } catch (err) {
+            setXConnected(false)
           }
         }
       } catch (e) {
@@ -71,6 +103,8 @@ const SocialAccounts = () => {
       return null
     }
   }
+
+  const connectedPlatformsCount = [pageId || pageName, instagramUsername, threadsConnected, xConnected].filter(Boolean).length
 
   const handleOpenModal = () => {
     setMessage('')
@@ -223,6 +257,39 @@ const SocialAccounts = () => {
     }
   }
 
+  const handleXConnect = () => {
+    const userId = getCurrentUserId()
+    if (!userId) {
+      setXStatus('Please log in to the app first.')
+      return
+    }
+    startXOAuth(userId)
+  }
+
+  const handleXPublish = async () => {
+    const userId = getCurrentUserId()
+    if (!userId) {
+      setXStatus('Please log in to the app first.')
+      return
+    }
+    if (!xText.trim()) {
+      setXStatus('Post text cannot be empty.')
+      return
+    }
+    setXLoading(true)
+    setXStatus('')
+    try {
+      const result = await publishX(userId, xText)
+      setXStatus(`Published to X! Post ID: ${result.postId}`)
+      setXText('')
+      setXConnected(true)
+    } catch (err) {
+      setXStatus(err.response?.data?.error || 'X publish failed. Check console for details.')
+    } finally {
+      setXLoading(false)
+    }
+  }
+
   return (
     <div className="flex min-h-screen">
       {/* SideNavBar */}
@@ -238,7 +305,7 @@ const SocialAccounts = () => {
                   <div className="w-2 h-2 rounded-full bg-emerald-500" />
                   <span className="font-label-sm text-label-sm text-on-surface-variant">Platform Health: Optimal</span>
                 </div>
-                <span className="font-body-sm text-body-sm text-on-surface-variant">1 Platform Connected</span>
+                <span className="font-body-sm text-body-sm text-on-surface-variant">{connectedPlatformsCount} Platform{connectedPlatformsCount === 1 ? '' : 's'} Connected</span>
               </div>
             </div>
           </div>
@@ -285,13 +352,13 @@ const SocialAccounts = () => {
                       <img src={instaLogo} alt="Instagram Logo" className="w-6 h-6" />
                     </div>
                     <div>
-                      <h3 className="font-headline-md text-[20px] font-semibold text-on-surface">@tech_enterprise_ig</h3>
+                      <h3 className="font-headline-md text-[20px] font-semibold text-on-surface">{instagramUsername ? `@${instagramUsername}` : 'Instagram account'}</h3>
                       <p className="font-label-sm text-label-sm text-on-surface-variant mt-1">Instagram</p>
                     </div>
                   </div>
-                  <div className="flex items-center gap-2 px-2 py-1 bg-emerald-50 rounded border border-emerald-500/20">
-                    <div className="w-1.5 h-1.5 rounded-full bg-emerald-500" />
-                    <span className="font-label-sm text-[10px] text-emerald-500 font-bold uppercase tracking-wider">{instagramUsername ? 'Connected' : 'Not Connected'}</span>
+                    <div className={`flex items-center gap-2 px-2 py-1 rounded border ${instagramStatus === 'Connected' ? 'bg-emerald-50 border border-emerald-500/20' : 'bg-surface-container border border-outline-variant'}`}>
+                    <div className={`w-1.5 h-1.5 rounded-full ${instagramStatus === 'Connected' ? 'bg-emerald-500' : 'bg-on-surface-variant'}`} />
+                    <span className={`font-label-sm text-[10px] font-bold uppercase tracking-wider ${instagramStatus === 'Connected' ? 'text-emerald-500' : 'text-on-surface-variant'}`}>{instagramStatus === 'Connected' ? 'Connected' : 'Not connected'}</span>
                   </div>
                 </div>
                 <div className="flex items-center justify-between border-t border-outline-variant pt-4 relative z-10">
@@ -337,13 +404,13 @@ const SocialAccounts = () => {
                     </div>
                     <div>
                       <h3 className="font-headline-md text-[20px] font-semibold text-on-surface">Threads</h3>
-                      <p className="font-label-sm text-label-sm text-on-surface-variant mt-1">Meta Threads</p>
+                      <p className="font-label-sm text-label-sm text-on-surface-variant mt-1">{threadsUserId ? `Connected as ${threadsUserId}` : 'Meta Threads'}</p>
                     </div>
                   </div>
                   <div className={`flex items-center gap-2 px-2 py-1 rounded ${threadsConnected ? 'bg-emerald-50 border border-emerald-500/20' : 'bg-surface-container border border-outline-variant'}`}>
                     <div className={`w-1.5 h-1.5 rounded-full ${threadsConnected ? 'bg-emerald-500' : 'bg-on-surface-variant'}`} />
                     <span className={`font-label-sm text-[10px] font-bold uppercase tracking-wider ${threadsConnected ? 'text-emerald-500' : 'text-on-surface-variant'}`}>
-                      {threadsConnected ? 'Connected' : 'Not Connected'}
+                      {threadsStatus || (threadsConnected ? 'Connected' : 'Not Connected')}
                     </span>
                   </div>
                 </div>
@@ -401,21 +468,21 @@ const SocialAccounts = () => {
                 </div>
               </div>
 
-              {/* TikTok Card */}
+              {/* X Card */}
               <div className="glass-panel rounded-xl p-6 flex flex-col gap-6 relative overflow-hidden bg-surface-container-lowest">
                 <div className="flex justify-between items-start relative z-10">
                   <div className="flex items-center gap-4">
                     <div className="w-12 h-12 rounded-full bg-surface-container-high flex items-center justify-center border border-outline-variant">
-                      <img src={tiktokLogo} alt="TikTok Logo" className="w-6 h-6" />
+                      <span className="text-xl font-bold text-on-surface">X</span>
                     </div>
                     <div>
-                      <h3 className="font-headline-md text-[20px] font-semibold text-on-surface">@social_manager</h3>
-                      <p className="font-label-sm text-label-sm text-on-surface-variant mt-1">TikTok</p>
+                      <h3 className="font-headline-md text-[20px] font-semibold text-on-surface">{xUsername ? `@${xUsername}` : 'X account'}</h3>
+                      <p className="font-label-sm text-label-sm text-on-surface-variant mt-1">{xName ? xName : 'X'}</p>
                     </div>
                   </div>
-                  <div className="flex items-center gap-2 px-2 py-1 bg-surface-container rounded border border-outline-variant">
-                    <div className="w-1.5 h-1.5 rounded-full bg-on-surface-variant" />
-                    <span className="font-label-sm text-[10px] text-on-surface-variant font-bold uppercase tracking-wider">Disconnected</span>
+                  <div className={`flex items-center gap-2 px-2 py-1 rounded border ${xConnected ? 'bg-emerald-50 border-emerald-500/20' : 'bg-surface-container border-outline-variant'}`}>
+                    <div className={`w-1.5 h-1.5 rounded-full ${xConnected ? 'bg-emerald-500' : 'bg-on-surface-variant'}`} />
+                    <span className={`font-label-sm text-[10px] font-bold uppercase tracking-wider ${xConnected ? 'text-emerald-500' : 'text-on-surface-variant'}`}>{xConnected ? 'Connected' : 'Disconnected'}</span>
                   </div>
                 </div>
                 <div className="flex items-center justify-between border-t border-outline-variant pt-4 relative z-10">
@@ -423,7 +490,12 @@ const SocialAccounts = () => {
                     <span className="material-symbols-outlined text-on-surface-variant text-[18px]">smart_toy</span>
                     <span className="font-label-sm text-label-sm text-on-surface-variant">AI Agent Idle</span>
                   </div>
-                  <button className="px-4 py-1.5 bg-primary text-on-primary rounded-lg font-label-sm text-label-sm hover:bg-primary/90 transition-colors shadow-sm">Connect</button>
+                  <button onClick={handleXConnect} className="px-4 py-1.5 bg-primary text-on-primary rounded-lg font-label-sm text-label-sm hover:bg-primary/90 transition-colors shadow-sm">{xConnected ? 'Reconnect' : 'Connect'}</button>
+                </div>
+                <div className="flex flex-col gap-3 pt-4">
+                  <textarea value={xText} onChange={(event) => setXText(event.target.value)} rows={3} maxLength={280} placeholder="Post to X..." className="w-full bg-surface border border-outline-variant rounded-lg p-4 text-on-surface focus:outline-none focus:border-primary" />
+                  {xStatus ? <div className="text-sm text-on-surface-variant">{xStatus}</div> : null}
+                  <button onClick={handleXPublish} disabled={xLoading} className="px-4 py-2 bg-primary text-on-primary rounded-lg font-label-sm text-label-sm hover:bg-primary/90 transition-colors shadow-sm">{xLoading ? 'Publishing...' : 'Publish to X'}</button>
                 </div>
               </div>
             </div>
