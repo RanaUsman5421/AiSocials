@@ -29,3 +29,9 @@ export async function getTikTokPostStatus(userId, publishId) {
   const res = await axios.post(`${apiBase}/api/tiktok/status`, { userId, publishId });
   return res.data;
 }
+
+export async function disconnectTikTok(userId) {
+  const res = await axios.post(`${apiBase}/api/tiktok/disconnect`, { userId });
+  return res.data;
+}
+}

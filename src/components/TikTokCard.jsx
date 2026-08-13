@@ -4,6 +4,7 @@ import {
   verifyTikTok,
   getTikTokCreatorInfo,
   publishTikTokVideo,
+  disconnectTikTok,
 } from '../services/tiktokClient';
 
 export default function TikTokCard({ userId }) {
@@ -45,6 +46,30 @@ export default function TikTokCard({ userId }) {
 
     setStatus('Redirecting to TikTok...');
     startTikTokOAuth(userId);
+  };
+
+  const handleDisconnect = async () => {
+    if (!window.confirm('Are you sure you want to disconnect your TikTok account? You will need to reconnect to publish again.')) {
+      return;
+    }
+
+    setLoading(true);
+    setStatus('Disconnecting TikTok...');
+
+    try {
+      await disconnectTikTok(userId);
+      setConnected(false);
+      setCreatorInfo(null);
+      setVideoUrl('');
+      setCaption('');
+      setPublishId('');
+      setStatus('TikTok account disconnected successfully.');
+    } catch (error) {
+      console.error('TikTok disconnect error', error);
+      setStatus(error.response?.data?.error || 'Failed to disconnect TikTok account.');
+    } finally {
+      setLoading(false);
+    }
   };
 
   const handlePublish = async (event) => {
@@ -121,6 +146,16 @@ export default function TikTokCard({ userId }) {
         >
           {connected ? 'Reconnect TikTok' : 'Connect TikTok'}
         </button>
+        {connected && (
+          <button
+            type="button"
+            onClick={handleDisconnect}
+            disabled={loading}
+            className="px-4 py-1.5 bg-red-500 text-white rounded-lg font-label-sm text-label-sm hover:bg-red-600 transition-colors shadow-sm disabled:bg-red-300"
+          >
+            {loading ? 'Disconnecting...' : 'Disconnect'}
+          </button>
+        )}
       </div>
 
       {connected ? (
