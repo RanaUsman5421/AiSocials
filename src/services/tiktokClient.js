@@ -34,4 +34,3 @@ export async function disconnectTikTok(userId) {
   const res = await axios.post(`${apiBase}/api/tiktok/disconnect`, { userId });
   return res.data;
 }
-}
